@@ -28,18 +28,18 @@ pub struct CoinbaseTime {
 }
 
 pub trait Price {
-    fn format_coinprice(&self) -> String;
-    fn return_coinprice(&self) -> String;
+    fn print_coinprice(&self) -> String;
+    fn format_coinamount(&self) -> String;
 }
 
 impl Price for CoinPrice {
-    fn format_coinprice(&self) -> String {
+    fn print_coinprice(&self) -> String {
         return format!("SPOT: {base}-{currency}: {amount}",
             base=self.base,
             currency=self.currency,
             amount=self.amount);
     }
-    fn return_coinprice(&self) -> String {
+    fn format_coinamount(&self) -> String {
         return format!("{amount}",
             amount=self.amount);
     }
@@ -84,7 +84,7 @@ fn get_coin_price(request_type: String, request_currency: String, request_rates:
                 currency: coinbaseprice.data.currency,
                 amount: coinbaseprice.data.amount
             };
-            return price.return_coinprice();
+            return price.format_coinamount();
         }        
         Err(e) => println!("Err: {:?}", e),
     }    
@@ -96,7 +96,8 @@ pub fn rust_struct_5(){
     let spot_price = get_coin_price("spot".to_string(), "BTC".to_string(), "USD".to_string());
     let buy_price = get_coin_price("buy".to_string(), "BTC".to_string(), "USD".to_string());
     let sell_price = get_coin_price("sell".to_string(), "BTC".to_string(), "USD".to_string());
+    let spread_price: f32 = (buy_price.parse::<f32>().unwrap()) - (sell_price.parse::<f32>().unwrap());
     
-    println!("{}: BTC-USD SPOT Price: {} | BTC-USD BUY Price: {} | BTC-USD SELL Price: {}", quote_time, spot_price, buy_price, sell_price);
+    println!("{}: BTC-USD SPOT Price: {} | BUY Price: {} | SELL Price: {} | Price Spread: {}", quote_time, spot_price, buy_price, sell_price, spread_price.to_string());    
 }
 
